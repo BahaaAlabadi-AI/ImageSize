@@ -350,7 +350,10 @@ export const CompressPanel: React.FC<CompressPanelProps> = ({
           background: var(--color-bg-subtle);
           border: 1px solid var(--color-border-default);
           color: var(--color-text-secondary);
-          transition: all var(--duration-fast);
+          transition: background-color var(--duration-fast),
+                      border-color var(--duration-fast),
+                      color var(--duration-fast),
+                      box-shadow var(--duration-fast);
         }
 
         .target-pill:hover {

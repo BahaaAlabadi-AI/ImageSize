@@ -180,7 +180,10 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
           border-radius: var(--radius-2xl);
           box-shadow: var(--shadow-sm);
           cursor: pointer;
-          transition: all var(--duration-normal) var(--ease-smooth);
+          transition: border-color var(--duration-normal) var(--ease-smooth),
+                      box-shadow var(--duration-normal) var(--ease-smooth),
+                      transform var(--duration-normal) var(--ease-smooth),
+                      background-color var(--duration-normal) var(--ease-smooth);
           text-align: center;
           overflow: hidden;
         }
@@ -228,7 +231,10 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
           border: 1px solid var(--color-border-default);
           box-shadow: var(--shadow-md);
           color: var(--color-primary);
-          transition: all var(--duration-fast) var(--ease-spring);
+          transition: transform var(--duration-fast) var(--ease-spring),
+                      color var(--duration-fast) var(--ease-spring),
+                      border-color var(--duration-fast) var(--ease-spring),
+                      box-shadow var(--duration-fast) var(--ease-spring);
         }
 
         .upload-dropzone:hover .upload-emblem {
@@ -277,7 +283,8 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
           color: #ffffff;
           background: var(--gradient-primary);
           box-shadow: var(--shadow-glow);
-          transition: all var(--duration-fast) var(--ease-spring);
+          transition: transform var(--duration-fast) var(--ease-spring),
+                      box-shadow var(--duration-fast) var(--ease-spring);
         }
 
         .choose-btn:hover {
@@ -297,7 +304,10 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
           color: var(--color-text-primary);
           background: var(--color-bg-surface);
           border: 1px solid var(--color-border-default);
-          transition: all var(--duration-fast) var(--ease-spring);
+          transition: background-color var(--duration-fast) var(--ease-spring),
+                      border-color var(--duration-fast) var(--ease-spring),
+                      color var(--duration-fast) var(--ease-spring),
+                      transform var(--duration-fast) var(--ease-spring);
         }
 
         .demo-sample-btn:hover {

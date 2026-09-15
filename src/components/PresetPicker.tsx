@@ -210,7 +210,9 @@ export const PresetPicker: React.FC<PresetPickerProps> = ({
           font-size: var(--text-xs);
           font-weight: 600;
           color: var(--color-text-secondary);
-          transition: all var(--duration-fast);
+          transition: background-color var(--duration-fast),
+                      color var(--duration-fast),
+                      box-shadow var(--duration-fast);
         }
 
         .tab-btn:hover {
@@ -241,7 +243,10 @@ export const PresetPicker: React.FC<PresetPickerProps> = ({
           background: var(--color-bg-surface);
           border: 1px solid var(--color-border-subtle);
           cursor: pointer;
-          transition: all var(--duration-fast);
+          transition: border-color var(--duration-fast),
+                      background-color var(--duration-fast),
+                      transform var(--duration-fast),
+                      box-shadow var(--duration-fast);
         }
 
         .preset-card:hover {

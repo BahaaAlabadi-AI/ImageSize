@@ -97,7 +97,9 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   color: var(--color-text-secondary);
-  transition: all var(--duration-fast) var(--ease-smooth);
+  transition: background-color var(--duration-fast) var(--ease-smooth),
+              border-color var(--duration-fast) var(--ease-smooth),
+              color var(--duration-fast) var(--ease-smooth);
   user-select: none;
 }
 
@@ -162,7 +164,8 @@
   color: var(--color-text-primary);
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
-  transition: all var(--duration-fast) var(--ease-smooth);
+  transition: background-color var(--duration-fast) var(--ease-smooth),
+              border-color var(--duration-fast) var(--ease-smooth);
 }
 
 .btn-secondary:hover {
@@ -260,6 +263,37 @@
   transform: translateX(-20px);
 }
 
+/* ============================================================
+   Shared Spinner (used by BatchQueue & Workspace Apply button)
+   ============================================================ */
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+/* ============================================================
+   Fade-in-up: subtle enter animation for major state changes
+   (workspace appear, tool panel switch, result reveal, batch queue)
+   Max 200ms, 10px translate — calm, not showy.
+   ============================================================ */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fade-in-up var(--duration-normal) var(--ease-smooth) both;
+}
+
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
@@ -346,13 +380,18 @@
     transform: none;
   }
 
-  /* Spinner in batch processing */
+  /* Spinner (batch + single-image Apply button) */
   .spin-icon {
     animation: none;
   }
 
   /* UIErrorBanner slide-in */
   .ui-error-banner {
+    animation: none;
+  }
+
+  /* Major state transition fade-in-up */
+  .fade-in-up {
     animation: none;
   }
 }

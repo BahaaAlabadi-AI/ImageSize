@@ -139,7 +139,10 @@ export const TransformPanel: React.FC<TransformPanelProps> = ({
           background: var(--color-bg-surface);
           border: 1px solid var(--color-border-default);
           color: var(--color-text-secondary);
-          transition: all var(--duration-fast);
+          transition: border-color var(--duration-fast),
+                      color var(--duration-fast),
+                      transform var(--duration-fast),
+                      box-shadow var(--duration-fast);
           min-height: 80px;
         }
 

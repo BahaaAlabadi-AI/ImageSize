@@ -160,7 +160,9 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
           background: var(--color-bg-surface);
           border: 1px solid var(--color-border-default);
           color: var(--color-text-primary);
-          transition: all var(--duration-fast) var(--ease-smooth);
+          transition: background-color var(--duration-fast) var(--ease-smooth),
+                      border-color var(--duration-fast) var(--ease-smooth),
+                      transform var(--duration-fast) var(--ease-smooth);
         }
 
         .icon-btn:hover, .lang-btn:hover {

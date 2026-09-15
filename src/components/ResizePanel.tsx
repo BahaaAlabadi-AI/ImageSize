@@ -268,7 +268,9 @@ export const ResizePanel: React.FC<ResizePanelProps> = ({
           background: var(--color-bg-subtle);
           border: 1px solid var(--color-border-default);
           color: var(--color-text-secondary);
-          transition: all var(--duration-fast);
+          transition: border-color var(--duration-fast),
+                      color var(--duration-fast),
+                      background-color var(--duration-fast);
           margin-bottom: 1px;
         }
 
@@ -355,7 +357,10 @@ export const ResizePanel: React.FC<ResizePanelProps> = ({
           border: 1px solid var(--color-border-default);
           color: var(--color-text-secondary);
           text-align: center;
-          transition: all var(--duration-fast);
+          transition: background-color var(--duration-fast),
+                      border-color var(--duration-fast),
+                      color var(--duration-fast),
+                      box-shadow var(--duration-fast);
         }
 
         .fit-pill:hover {

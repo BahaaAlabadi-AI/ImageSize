@@ -13,6 +13,7 @@ import {
   RotateCcw,
   Info,
   CheckCircle,
+  Loader2,
 } from 'lucide-react';
 import {
   ImageFile,
@@ -229,7 +230,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
   };
 
   return (
-    <div className="workspace-layout">
+    <div className="workspace-layout fade-in-up">
       {/* Sidebar Tool Panels (Reference Image 2 Studio Style) */}
       <aside className="workspace-sidebar glass-panel">
         {/* Navigation Tabs */}
@@ -290,7 +291,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         </div>
 
         {/* Selected Tool Controls Form */}
-        <div className="sidebar-tool-body">
+        <div className="sidebar-tool-body fade-in-up" key={activeTool}>
           {activeTool === 'resize' && (
             <ResizePanel
               imageFile={imageFile}
@@ -339,7 +340,9 @@ export const Workspace: React.FC<WorkspaceProps> = ({
             disabled={isProcessing}
             className="btn-primary-glow flex-2"
           >
-            <Sparkles size={18} />
+            {isProcessing
+              ? <Loader2 size={18} className="spin-icon" />
+              : <Sparkles size={18} />}
             <span>{isProcessing ? t.processing : t.apply}</span>
           </button>
         </div>
@@ -572,7 +575,8 @@ export const Workspace: React.FC<WorkspaceProps> = ({
           background: var(--color-bg-surface);
           border: 1px solid var(--color-border-default);
           color: var(--color-text-secondary);
-          transition: all var(--duration-fast);
+          transition: color var(--duration-fast),
+                      border-color var(--duration-fast);
         }
 
         .action-icon-btn:hover {

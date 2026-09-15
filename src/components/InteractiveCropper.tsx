@@ -525,7 +525,8 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
           color: var(--color-text-secondary);
           background: var(--color-bg-surface);
           border: 1px solid var(--color-border-default);
-          transition: all var(--duration-fast);
+          transition: color var(--duration-fast),
+                      background-color var(--duration-fast);
         }
 
         .close-btn:hover {
@@ -584,7 +585,7 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
           display: inline-block;
           max-width: 90%;
           max-height: 90%;
-          transition: transform var(--duration-fast) var(--ease-out);
+          /* No transition: zoom tracks slider 1:1 with zero lag */
         }
 
         .crop-target-img {
@@ -753,7 +754,8 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
           font-weight: 600;
           color: var(--color-text-secondary);
           border-radius: var(--radius-lg);
-          transition: all var(--duration-fast);
+          transition: color var(--duration-fast),
+                      background-color var(--duration-fast);
         }
 
         .btn-ghost:hover {
@@ -773,7 +775,9 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
           color: #ffffff;
           background: #2563eb;
           box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-          transition: all var(--duration-fast) var(--ease-spring);
+          transition: background-color var(--duration-fast) var(--ease-spring),
+                      transform var(--duration-fast) var(--ease-spring),
+                      box-shadow var(--duration-fast) var(--ease-spring);
         }
 
         .btn-crop-save:hover {

@@ -34,7 +34,7 @@ export const BatchQueue: React.FC<BatchQueueProps> = ({
   if (files.length <= 1) return null;
 
   return (
-    <div className="batch-queue-card glass-panel">
+    <div className="batch-queue-card glass-panel fade-in-up">
       <div className="batch-header">
         <div className="batch-title-group">
           <Layers size={18} className="batch-icon" />
@@ -71,7 +71,7 @@ export const BatchQueue: React.FC<BatchQueueProps> = ({
       {/* Progress Bar */}
       {isProcessing && (
         <div className="progress-track">
-          <div className="progress-bar" style={{ width: `${progress}%` }} />
+          <div className="progress-bar" style={{ transform: `scaleX(${progress / 100})` }} />
         </div>
       )}
 
@@ -159,14 +159,6 @@ export const BatchQueue: React.FC<BatchQueueProps> = ({
           font-size: var(--text-xs);
         }
 
-        .spin-icon {
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          100% { transform: rotate(360deg); }
-        }
-
         .progress-track {
           width: 100%;
           height: 4px;
@@ -177,9 +169,15 @@ export const BatchQueue: React.FC<BatchQueueProps> = ({
         }
 
         .progress-bar {
+          width: 100%;
           height: 100%;
           background: var(--gradient-explore);
-          transition: width var(--duration-fast) var(--ease-smooth);
+          transform-origin: left;
+          transition: transform var(--duration-fast) var(--ease-smooth);
+        }
+
+        [dir='rtl'] .progress-bar {
+          transform-origin: right;
         }
 
         .batch-thumbnails-row {
@@ -201,7 +199,8 @@ export const BatchQueue: React.FC<BatchQueueProps> = ({
           cursor: pointer;
           min-width: 180px;
           max-width: 220px;
-          transition: all var(--duration-fast);
+          transition: background-color var(--duration-fast),
+                      border-color var(--duration-fast);
         }
 
         .batch-thumb-item:hover {

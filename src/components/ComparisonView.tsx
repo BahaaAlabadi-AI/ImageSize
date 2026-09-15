@@ -50,7 +50,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   const isSmaller = result.reductionBytes > 0;
 
   return (
-    <div className="comparison-container glass-panel">
+    <div className="comparison-container glass-panel fade-in-up">
       {/* Header Bar with View Toggle & Download Action */}
       <div className="comp-header">
         <div className="comp-title-group">
@@ -241,7 +241,9 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           height: 32px;
           border-radius: var(--radius-sm);
           color: var(--color-text-muted);
-          transition: all var(--duration-fast);
+          transition: background-color var(--duration-fast),
+                      color var(--duration-fast),
+                      box-shadow var(--duration-fast);
         }
 
         .mode-btn.is-active {

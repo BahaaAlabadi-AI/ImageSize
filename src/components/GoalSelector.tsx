@@ -141,7 +141,9 @@ export const GoalSelector: React.FC<GoalSelectorProps> = ({ onSelectGoal, active
           background: var(--color-bg-surface);
           border: 1px solid var(--color-border-subtle);
           border-radius: var(--radius-lg);
-          transition: all var(--duration-fast) var(--ease-spring);
+          transition: transform var(--duration-fast) var(--ease-spring),
+                      border-color var(--duration-fast) var(--ease-spring),
+                      box-shadow var(--duration-fast) var(--ease-spring);
           cursor: pointer;
           position: relative;
           overflow: hidden;
