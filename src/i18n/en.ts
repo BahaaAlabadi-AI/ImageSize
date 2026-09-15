@@ -187,4 +187,33 @@ export const en = {
   copied: 'Copied to clipboard!',
   themeToggle: 'Switch Theme',
   langToggle: 'Language / اللغة',
+
+  // Error Messages
+  errors: {
+    unsupportedFormat: {
+      title: 'Cannot open this file',
+      message: "We couldn't open this image format in your browser. Try JPG, PNG, or WebP.",
+      suggestions: ['Convert the file to JPG, PNG, or WebP first', 'Make sure the file is not corrupted'],
+    },
+    imageTooLarge: {
+      title: 'Image too large for memory',
+      message: "This image is too large for your device's available memory.",
+      suggestions: ['Try a smaller source image', 'Lower the output dimensions', 'Close other browser tabs to free memory'],
+    },
+    targetSizeNotReached: {
+      title: 'Target size not fully reached',
+      message: 'The file could not be compressed to your target — the minimum quality was already applied.',
+      suggestions: ['Try a lower target size limit', 'Switch to WebP format for better compression', 'Reduce the image dimensions first'],
+    },
+    processingFailed: {
+      title: 'Processing failed',
+      message: 'Something went wrong while processing this image.',
+      suggestions: ['Try again', 'Check the image is not corrupted'],
+    },
+    batchFailed: {
+      title: 'Batch processing error',
+      message: 'One or more images could not be processed.',
+      suggestions: ['Check that all files are valid images', 'Try processing them one at a time'],
+    },
+  },
 };

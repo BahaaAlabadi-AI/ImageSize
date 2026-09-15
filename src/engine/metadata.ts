@@ -8,7 +8,7 @@ export async function parseExif(file: File): Promise<ExifInfo> {
   }
 
   try {
-    const buffer = await file.slice(0, 128 * 1024).arrayBuffer();
+    const buffer = await file.slice(0, 256 * 1024).arrayBuffer();
     const view = new DataView(buffer);
 
     // Check for JPEG SOI (Start Of Image) 0xFFD8
@@ -39,6 +39,8 @@ export async function parseExif(file: File): Promise<ExifInfo> {
           const entriesCount = view.getUint16(ifdStart, isLittleEndian);
           const exif: ExifInfo = { hasExif: true };
 
+          let gpsIFDOffset: number | null = null;
+
           for (let i = 0; i < entriesCount; i++) {
             const entryOffset = ifdStart + 2 + i * 12;
             if (entryOffset + 12 > length) break;
@@ -66,6 +68,15 @@ export async function parseExif(file: File): Promise<ExifInfo> {
             if (tag === 0x0131) {
               exif.software = readString(view, tiffStart + valOffset, 32);
             }
+            // GPS Info IFD Pointer (0x8825)
+            if (tag === 0x8825) {
+              gpsIFDOffset = valOffset;
+            }
+          }
+
+          // Parse GPS Sub-IFD if present
+          if (gpsIFDOffset !== null) {
+            parseGpsIFD(view, tiffStart, tiffStart + gpsIFDOffset, isLittleEndian, exif);
           }
 
           return exif;
@@ -85,6 +96,81 @@ export async function parseExif(file: File): Promise<ExifInfo> {
   }
 
   return defaultInfo;
+}
+
+/**
+ * Parse the GPS Sub-IFD and populate latitude/longitude on the exif object.
+ */
+function parseGpsIFD(
+  view: DataView,
+  tiffStart: number,
+  gpsIFDStart: number,
+  isLittleEndian: boolean,
+  exif: ExifInfo
+): void {
+  try {
+    if (gpsIFDStart + 2 > view.byteLength) return;
+    const entriesCount = view.getUint16(gpsIFDStart, isLittleEndian);
+
+    let latRef: string | null = null;
+    let lonRef: string | null = null;
+    let latitude: number | null = null;
+    let longitude: number | null = null;
+
+    for (let i = 0; i < entriesCount; i++) {
+      const entryOffset = gpsIFDStart + 2 + i * 12;
+      if (entryOffset + 12 > view.byteLength) break;
+
+      const tag = view.getUint16(entryOffset, isLittleEndian);
+      const type = view.getUint16(entryOffset + 2, isLittleEndian);
+      const count = view.getUint32(entryOffset + 4, isLittleEndian);
+      const valueOffset = view.getUint32(entryOffset + 8, isLittleEndian);
+
+      // GPSLatitudeRef (0x0001) — ASCII 'N' or 'S'
+      if (tag === 0x0001) {
+        latRef = readString(view, entryOffset + 8, 1);
+      }
+      // GPSLatitude (0x0002) — 3 RATIONALs: degrees, minutes, seconds
+      if (tag === 0x0002 && type === 5 /* RATIONAL */ && count === 3) {
+        latitude = readDMS(view, tiffStart + valueOffset, isLittleEndian);
+      }
+      // GPSLongitudeRef (0x0003) — ASCII 'E' or 'W'
+      if (tag === 0x0003) {
+        lonRef = readString(view, entryOffset + 8, 1);
+      }
+      // GPSLongitude (0x0004) — 3 RATIONALs: degrees, minutes, seconds
+      if (tag === 0x0004 && type === 5 /* RATIONAL */ && count === 3) {
+        longitude = readDMS(view, tiffStart + valueOffset, isLittleEndian);
+      }
+    }
+
+    if (latitude !== null && latRef !== null) {
+      exif.latitude = latRef === 'S' ? -latitude : latitude;
+    }
+    if (longitude !== null && lonRef !== null) {
+      exif.longitude = lonRef === 'W' ? -longitude : longitude;
+    }
+  } catch {
+    // GPS parsing failed silently — not a critical error
+  }
+}
+
+/**
+ * Read 3 consecutive RATIONAL values (deg/min/sec) and convert to decimal degrees.
+ * Each RATIONAL is two UInt32s: numerator / denominator.
+ */
+function readDMS(view: DataView, offset: number, isLittleEndian: boolean): number {
+  const deg = readRational(view, offset, isLittleEndian);
+  const min = readRational(view, offset + 8, isLittleEndian);
+  const sec = readRational(view, offset + 16, isLittleEndian);
+  return deg + min / 60 + sec / 3600;
+}
+
+function readRational(view: DataView, offset: number, isLittleEndian: boolean): number {
+  if (offset + 8 > view.byteLength) return 0;
+  const numerator = view.getUint32(offset, isLittleEndian);
+  const denominator = view.getUint32(offset + 4, isLittleEndian);
+  return denominator === 0 ? 0 : numerator / denominator;
 }
 
 function readString(view: DataView, offset: number, maxLen: number): string {

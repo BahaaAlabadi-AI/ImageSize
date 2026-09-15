@@ -98,6 +98,7 @@ export const BatchQueue: React.FC<BatchQueueProps> = ({
                   onRemoveFile(idx);
                 }}
                 title={t.remove}
+                aria-label={`${t.remove} ${file.name}`}
               >
                 ×
               </button>

@@ -116,6 +116,7 @@ export const CompressPanel: React.FC<CompressPanelProps> = ({
             <input
               type="number"
               placeholder={t.compress.customKb}
+              aria-label={t.compress.customKb}
               value={customKbInput}
               onChange={(e) => setCustomKbInput(e.target.value)}
               className="custom-field font-mono"
@@ -152,6 +153,7 @@ export const CompressPanel: React.FC<CompressPanelProps> = ({
           max="100"
           value={compressOptions.quality}
           disabled={!!compressOptions.targetSizeKb}
+          aria-label={t.compress.qualityLabel}
           onChange={(e) =>
             onChange({ ...compressOptions, quality: parseInt(e.target.value, 10) })
           }
@@ -219,6 +221,7 @@ export const CompressPanel: React.FC<CompressPanelProps> = ({
                   onChange={(e) => onChange({ ...compressOptions, matteColor: e.target.value })}
                   className="color-input"
                   title={t.convert.colorCustom}
+                  aria-label={t.convert.colorCustom}
                 />
               </div>
             </div>

@@ -9,6 +9,13 @@ import {
 } from '../types/image';
 import { calculateAspectRatio, generateSafeFileName } from '../utils/formatters';
 
+// Extended result from binarySearchTargetSize so callers can surface warnings
+export interface BinarySearchResult {
+  blob: Blob;
+  targetReached: boolean;
+  actualSizeKb: number;
+}
+
 export async function processImage(
   imageFile: ImageFile,
   options: {
@@ -17,7 +24,7 @@ export async function processImage(
     compress?: CompressOptions;
     transform?: TransformOptions;
   }
-): Promise<ProcessedResult> {
+): Promise<ProcessedResult & { targetSizeWarning?: { actualKb: number; targetKb: number } }> {
   const startTime = performance.now();
 
   const {
@@ -67,7 +74,7 @@ export async function processImage(
     const factor = Math.max(1, resize.percentage) / 100;
     destW = Math.round(postTransformSrcW * factor);
     destH = Math.round(postTransformSrcH * factor);
-  } else if (resize.lockAspectRatio) {
+  } else if (resize.lockAspectRatio && resize.mode !== 'exact') {
     const aspect = postTransformSrcW / postTransformSrcH;
     // Recalculate based on provided dimension
     if (resize.width !== postTransformSrcW) {
@@ -79,8 +86,8 @@ export async function processImage(
     }
   }
 
-  // Prevent enlargement if checked
-  if (resize.preventEnlargement) {
+  // Prevent enlargement if checked (not applicable to exact mode)
+  if (resize.preventEnlargement && resize.mode !== 'exact') {
     if (destW > postTransformSrcW) destW = postTransformSrcW;
     if (destH > postTransformSrcH) destH = postTransformSrcH;
   }
@@ -88,10 +95,26 @@ export async function processImage(
   destW = Math.max(1, Math.round(destW));
   destH = Math.max(1, Math.round(destH));
 
-  // 4. Create primary drawing canvas
+  // 4. Apply resize mode logic to determine final canvas dimensions and draw parameters
+  const mode = resize.mode || 'fit';
+  const drawResult = computeResizeMode(
+    mode,
+    postTransformSrcW,
+    postTransformSrcH,
+    destW,
+    destH,
+    srcX,
+    srcY,
+    srcW,
+    srcH,
+    isRotatedQuarter,
+    crop
+  );
+
+  // 5. Create primary drawing canvas
   const canvas = document.createElement('canvas');
-  canvas.width = destW;
-  canvas.height = destH;
+  canvas.width = drawResult.canvasW;
+  canvas.height = drawResult.canvasH;
   const ctx = canvas.getContext('2d', { alpha: true });
   if (!ctx) throw new Error('Could not acquire 2D canvas context');
 
@@ -99,16 +122,16 @@ export async function processImage(
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  // 5. Matte background for JPG or when transparency removal is desired
+  // 6. Matte background for JPG or when transparency removal is desired
   const isJpg = compress.format === 'image/jpeg';
   if (isJpg || (imageFile.hasTransparency && compress.matteColor)) {
     ctx.fillStyle = compress.matteColor || '#ffffff';
-    ctx.fillRect(0, 0, destW, destH);
+    ctx.fillRect(0, 0, drawResult.canvasW, drawResult.canvasH);
   }
 
-  // 6. Apply transforms (Rotate, Flip, Scale)
+  // 7. Apply transforms (Rotate, Flip, Scale) and draw
   ctx.save();
-  ctx.translate(destW / 2, destH / 2);
+  ctx.translate(drawResult.canvasW / 2, drawResult.canvasH / 2);
 
   if (transform.rotate !== 0) {
     ctx.rotate((transform.rotate * Math.PI) / 180);
@@ -118,30 +141,34 @@ export async function processImage(
   const scaleY = transform.flipV ? -1 : 1;
   ctx.scale(scaleX, scaleY);
 
-  // Draw source image cropped & scaled onto destination canvas
-  const drawW = isRotatedQuarter ? destH : destW;
-  const drawH = isRotatedQuarter ? destW : destH;
-
   ctx.drawImage(
     img,
-    srcX,
-    srcY,
-    srcW,
-    srcH,
-    -drawW / 2,
-    -drawH / 2,
-    drawW,
-    drawH
+    drawResult.sx,
+    drawResult.sy,
+    drawResult.sw,
+    drawResult.sh,
+    -drawResult.dw / 2,
+    -drawResult.dh / 2,
+    drawResult.dw,
+    drawResult.dh
   );
 
   ctx.restore();
 
-  // 7. Format conversion and compression search
+  // 8. Format conversion and compression search
   let finalBlob: Blob;
+  let targetSizeWarning: { actualKb: number; targetKb: number } | undefined;
   const targetFormat = detectSupportedFormat(compress.format);
 
   if (compress.targetSizeKb && compress.targetSizeKb > 0 && targetFormat !== 'image/png') {
-    finalBlob = await binarySearchTargetSize(canvas, targetFormat, compress.targetSizeKb * 1024);
+    const searchResult = await binarySearchTargetSize(canvas, targetFormat, compress.targetSizeKb * 1024);
+    finalBlob = searchResult.blob;
+    if (!searchResult.targetReached) {
+      targetSizeWarning = {
+        actualKb: searchResult.actualSizeKb,
+        targetKb: compress.targetSizeKb,
+      };
+    }
   } else {
     const q = Math.min(1.0, Math.max(0.01, compress.quality / 100));
     finalBlob = await canvasToBlobAsync(canvas, targetFormat, q);
@@ -149,7 +176,7 @@ export async function processImage(
 
   const durationMs = Math.round(performance.now() - startTime);
   const resultDataUrl = URL.createObjectURL(finalBlob);
-  const { text: resultAspectRatio } = calculateAspectRatio(destW, destH);
+  const { text: resultAspectRatio } = calculateAspectRatio(drawResult.canvasW, drawResult.canvasH);
   
   const reductionBytes = imageFile.size - finalBlob.size;
   const compressionRatio = Math.round(((imageFile.size - finalBlob.size) / imageFile.size) * 100);
@@ -159,8 +186,8 @@ export async function processImage(
   return {
     blob: finalBlob,
     dataUrl: resultDataUrl,
-    width: destW,
-    height: destH,
+    width: drawResult.canvasW,
+    height: drawResult.canvasH,
     size: finalBlob.size,
     format: targetFormat,
     filename: safeFilename,
@@ -168,7 +195,99 @@ export async function processImage(
     compressionRatio,
     reductionBytes,
     durationMs,
+    targetSizeWarning,
   };
+}
+
+/**
+ * Compute draw parameters for each resize mode.
+ *
+ * Returns:
+ *  - canvasW/canvasH: final output canvas dimensions
+ *  - sx/sy/sw/sh:     source rect from original image (after crop)
+ *  - dw/dh:           destination draw size on canvas (centered)
+ */
+function computeResizeMode(
+  mode: string,
+  srcW: number,    // post-transform source width (may be rotated)
+  srcH: number,    // post-transform source height
+  destW: number,   // user-requested target width
+  destH: number,   // user-requested target height
+  cropX: number,   // crop origin x on original image
+  cropY: number,   // crop origin y
+  cropW: number,   // crop region width on original image
+  cropH: number,   // crop region height
+  isRotatedQuarter: boolean,
+  crop: CropRect | null
+): { canvasW: number; canvasH: number; sx: number; sy: number; sw: number; sh: number; dw: number; dh: number } {
+  const srcAspect = srcW / srcH;
+
+  switch (mode) {
+    case 'exact': {
+      // Stretch/distort to exact destW×destH — only mode that can distort
+      const dw = isRotatedQuarter ? destH : destW;
+      const dh = isRotatedQuarter ? destW : destH;
+      return { canvasW: destW, canvasH: destH, sx: cropX, sy: cropY, sw: cropW, sh: cropH, dw, dh };
+    }
+
+    case 'fill':
+    case 'crop-to-fit': {
+      // Scale to cover destW×destH, center-crop overflow (CSS object-fit: cover)
+      // If 'crop-to-fit' and a user crop rect already exists, it provides sx/sy/sw/sh directly
+      const destAspect = destW / destH;
+
+      let sx: number, sy: number, sw: number, sh: number;
+
+      if (mode === 'crop-to-fit' && crop) {
+        // Honour the user's crop region — just fit it into the target box
+        sx = cropX; sy = cropY; sw = cropW; sh = cropH;
+      } else {
+        // Center-crop: find the largest rectangle with destAspect inside the source
+        if (srcAspect > destAspect) {
+          // Source is wider — crop left/right
+          const coverH = isRotatedQuarter ? cropW : cropH;
+          const coverW = Math.round(coverH * destAspect);
+          const offset = Math.round((cropW - coverW) / 2);
+          sx = cropX + (isRotatedQuarter ? 0 : offset);
+          sy = cropY + (isRotatedQuarter ? offset : 0);
+          sw = isRotatedQuarter ? cropW : coverW;
+          sh = isRotatedQuarter ? coverW : cropH;
+        } else {
+          // Source is taller — crop top/bottom
+          const coverW = isRotatedQuarter ? cropH : cropW;
+          const coverH = Math.round(coverW / destAspect);
+          const offset = Math.round((cropH - coverH) / 2);
+          sx = cropX + (isRotatedQuarter ? offset : 0);
+          sy = cropY + (isRotatedQuarter ? 0 : offset);
+          sw = isRotatedQuarter ? coverH : cropW;
+          sh = isRotatedQuarter ? cropH : coverH;
+        }
+      }
+
+      const dw = isRotatedQuarter ? destH : destW;
+      const dh = isRotatedQuarter ? destW : destH;
+      return { canvasW: destW, canvasH: destH, sx, sy, sw, sh, dw, dh };
+    }
+
+    case 'fit':
+    default: {
+      // Scale to fit within destW×destH preserving aspect ratio — no cropping
+      const destAspect = destW / destH;
+      let outW: number, outH: number;
+
+      if (srcAspect > destAspect) {
+        outW = destW;
+        outH = Math.round(destW / srcAspect);
+      } else {
+        outH = destH;
+        outW = Math.round(destH * srcAspect);
+      }
+
+      const dw = isRotatedQuarter ? outH : outW;
+      const dh = isRotatedQuarter ? outW : outH;
+      return { canvasW: outW, canvasH: outH, sx: cropX, sy: cropY, sw: cropW, sh: cropH, dw, dh };
+    }
+  }
 }
 
 function loadImageElement(url: string): Promise<HTMLImageElement> {
@@ -213,7 +332,7 @@ async function binarySearchTargetSize(
   canvas: HTMLCanvasElement,
   format: OutputFormat,
   targetBytes: number
-): Promise<Blob> {
+): Promise<BinarySearchResult> {
   let low = 0.05;
   let high = 0.98;
   let bestBlob: Blob | null = null;
@@ -232,9 +351,14 @@ async function binarySearchTargetSize(
   }
 
   if (bestBlob) {
-    return bestBlob;
+    return { blob: bestBlob, targetReached: true, actualSizeKb: Math.round(bestBlob.size / 1024) };
   }
 
-  // If even low=0.05 was larger than targetBytes, return lowest quality blob
-  return canvasToBlobAsync(canvas, format, 0.05);
+  // Even quality=0.05 was larger than targetBytes — return lowest quality blob with warning
+  const lowestBlob = await canvasToBlobAsync(canvas, format, 0.05);
+  return {
+    blob: lowestBlob,
+    targetReached: false,
+    actualSizeKb: Math.round(lowestBlob.size / 1024),
+  };
 }

@@ -73,6 +73,7 @@ export const TransformPanel: React.FC<TransformPanelProps> = ({
           type="button"
           onClick={handleFlipH}
           className={`transform-btn ${transform.flipH ? 'is-active' : ''}`}
+          aria-pressed={transform.flipH}
         >
           <FlipHorizontal size={20} />
           <span>{t.rotate.flipH}</span>
@@ -82,6 +83,7 @@ export const TransformPanel: React.FC<TransformPanelProps> = ({
           type="button"
           onClick={handleFlipV}
           className={`transform-btn ${transform.flipV ? 'is-active' : ''}`}
+          aria-pressed={transform.flipV}
         >
           <FlipVertical size={20} />
           <span>{t.rotate.flipV}</span>

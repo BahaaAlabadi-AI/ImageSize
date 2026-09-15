@@ -174,12 +174,19 @@ export const ResizePanel: React.FC<ResizePanelProps> = ({
                 type="button"
                 className={`fit-pill ${resizeOptions.mode === m ? 'is-active' : ''}`}
                 onClick={() => onChange({ ...resizeOptions, mode: m })}
+                aria-pressed={resizeOptions.mode === m}
               >
                 {labels[m]}
               </button>
             );
           })}
         </div>
+        {resizeOptions.mode === 'exact' && (
+          <div className="exact-mode-warning" role="alert">
+            <ShieldAlert size={14} />
+            <span>Exact mode stretches the image — aspect ratio will be distorted.</span>
+          </div>
+        )}
       </div>
 
       {/* Primary Apply Action */}
@@ -361,6 +368,21 @@ export const ResizePanel: React.FC<ResizePanelProps> = ({
           border-color: transparent;
           color: #ffffff;
           box-shadow: var(--shadow-glow-purple);
+        }
+
+        .exact-mode-warning {
+          display: flex;
+          align-items: center;
+          gap: var(--space-2);
+          margin-top: var(--space-2);
+          padding: var(--space-2) var(--space-3);
+          border-radius: var(--radius-md);
+          background: rgba(245, 158, 11, 0.1);
+          border: 1px solid rgba(245, 158, 11, 0.3);
+          color: #f59e0b;
+          font-size: var(--text-2xs);
+          font-weight: 500;
+          line-height: 1.4;
         }
 
         .apply-btn {

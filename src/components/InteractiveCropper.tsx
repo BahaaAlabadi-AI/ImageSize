@@ -36,6 +36,9 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
   // Selected aspect ratio: 'free', '1:1', '4:5', '16:9', '9:16', '4:3', '3:2'
   const [selectedRatio, setSelectedRatio] = useState<string>(aspectPreset);
   const [zoom, setZoom] = useState<number>(1);
+  // Pan offset in pixels (applied before scale)
+  const [panX, setPanX] = useState<number>(0);
+  const [panY, setPanY] = useState<number>(0);
 
   // Normalised crop coordinates: x, y, width, height in 0..1 range of displayed image
   const [cropNorm, setCropNorm] = useState<{ x: number; y: number; w: number; h: number }>({
@@ -45,19 +48,25 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
     h: 0.8,
   });
 
-  // Track dragging
+  // Track dragging — crop handles or background pan
   const dragRef = useRef<{
     active: boolean;
     handle: HandleType | null;
+    isPan: boolean;
     startX: number;
     startY: number;
     startCrop: { x: number; y: number; w: number; h: number };
+    startPanX: number;
+    startPanY: number;
   }>({
     active: false,
     handle: null,
+    isPan: false,
     startX: 0,
     startY: 0,
     startCrop: { x: 0.1, y: 0.1, w: 0.8, h: 0.8 },
+    startPanX: 0,
+    startPanY: 0,
   });
 
   // Calculate ratio numeric value
@@ -118,6 +127,8 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
   // Initialize or reset crop
   const handleReset = () => {
     setZoom(1);
+    setPanX(0);
+    setPanY(0);
     applyRatioToCrop('free');
   };
 
@@ -131,15 +142,50 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
     dragRef.current = {
       active: true,
       handle,
+      isPan: false,
       startX: e.clientX,
       startY: e.clientY,
       startCrop: { ...cropNorm },
+      startPanX: panX,
+      startPanY: panY,
+    };
+  };
+
+  // Background pan — triggered when user drags on the viewport background (not the crop frame)
+  const handleViewportPointerDown = (e: React.PointerEvent) => {
+    // Only initiate pan if zoom > 1 and not clicking on the crop frame area
+    if (zoom <= 1) return;
+    e.preventDefault();
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    dragRef.current = {
+      active: true,
+      handle: null,
+      isPan: true,
+      startX: e.clientX,
+      startY: e.clientY,
+      startCrop: { ...cropNorm },
+      startPanX: panX,
+      startPanY: panY,
     };
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!dragRef.current.active || !imageRef.current) return;
     e.preventDefault();
+
+    // Pan mode
+    if (dragRef.current.isPan && containerRef.current) {
+      const deltaX = e.clientX - dragRef.current.startX;
+      const deltaY = e.clientY - dragRef.current.startY;
+      const container = containerRef.current.getBoundingClientRect();
+      const img = imageRef.current.getBoundingClientRect();
+      // Max pan so image stays at least 20% visible
+      const maxX = (img.width * (zoom - 1)) / 2;
+      const maxY = (img.height * (zoom - 1)) / 2;
+      setPanX(Math.max(-maxX, Math.min(maxX, dragRef.current.startPanX + deltaX)));
+      setPanY(Math.max(-maxY, Math.min(maxY, dragRef.current.startPanY + deltaY)));
+      return;
+    }
 
     const rect = imageRef.current.getBoundingClientRect();
     const deltaX = (e.clientX - dragRef.current.startX) / rect.width;
@@ -259,15 +305,16 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
 
         {/* Crop Viewport with Interactive 8-point Frame */}
         <div
-          className="crop-viewport"
+          className={`crop-viewport ${zoom > 1 ? 'is-pannable' : ''}`}
           ref={containerRef}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
+          onPointerDown={handleViewportPointerDown}
         >
           <div
             className="crop-image-container"
-            style={{ transform: `scale(${zoom})`, transformOrigin: 'center center' }}
+            style={{ transform: `translate(${panX}px, ${panY}px) scale(${zoom})`, transformOrigin: 'center center' }}
           >
             <img
               ref={imageRef}
@@ -380,7 +427,13 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
               max="2.5"
               step="0.05"
               value={zoom}
-              onChange={(e) => setZoom(parseFloat(e.target.value))}
+              aria-label={t.crop.zoom}
+              onChange={(e) => {
+                const newZoom = parseFloat(e.target.value);
+                setZoom(newZoom);
+                // Reset pan when zoom returns to 1
+                if (newZoom <= 1) { setPanX(0); setPanY(0); }
+              }}
               className="custom-slider zoom-slider"
             />
             <span className="zoom-val font-mono">{Math.round(zoom * 100)}%</span>
@@ -515,6 +568,15 @@ export const InteractiveCropper: React.FC<InteractiveCropperProps> = ({
           overflow: hidden;
           touch-action: none;
           user-select: none;
+          cursor: default;
+        }
+
+        .crop-viewport.is-pannable {
+          cursor: grab;
+        }
+
+        .crop-viewport.is-pannable:active {
+          cursor: grabbing;
         }
 
         .crop-image-container {

@@ -4,6 +4,7 @@ import { GoalSelector } from './components/GoalSelector';
 import { UploadZone } from './components/UploadZone';
 import { Workspace } from './components/Workspace';
 import { BatchQueue } from './components/BatchQueue';
+import { UIErrorBanner, UIError } from './components/UIErrorBanner';
 import { ImageFile, QuickWizard, ProcessedResult } from './types/image';
 import { decodeImageFile } from './engine/decode';
 import { processBatchQueue, createBatchZip } from './engine/batch';
@@ -32,6 +33,9 @@ export function App() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [activeGoal, setActiveGoal] = useState<QuickWizard | null>(null);
 
+  // UI Error Banner State
+  const [uiError, setUiError] = useState<UIError | null>(null);
+
   // Batch Processing State
   const [isBatchProcessing, setIsBatchProcessing] = useState<boolean>(false);
   const [batchProgress, setBatchProgress] = useState<number>(0);
@@ -40,13 +44,32 @@ export function App() {
   // Handle file uploads (Single or Multiple)
   const handleFilesSelected = async (files: File[]) => {
     const loaded: ImageFile[] = [];
+    let failedCount = 0;
+
     for (const file of files) {
       try {
         const decoded = await decodeImageFile(file);
         loaded.push(decoded);
       } catch (err) {
-        console.error(`Error decoding file ${file.name}:`, err);
+        console.debug(`Error decoding file ${file.name}:`, err);
+        // Detect memory-related errors vs unsupported format
+        if (err instanceof RangeError || err instanceof DOMException) {
+          setUiError({ ...t.errors.imageTooLarge, type: 'error' });
+        } else {
+          failedCount++;
+        }
       }
+    }
+
+    if (failedCount > 0 && loaded.length === 0) {
+      setUiError({ ...t.errors.unsupportedFormat, type: 'error' });
+    } else if (failedCount > 0) {
+      setUiError({
+        title: t.errors.unsupportedFormat.title,
+        message: `${failedCount} file(s) could not be opened and were skipped.`,
+        suggestions: t.errors.unsupportedFormat.suggestions,
+        type: 'warning',
+      });
     }
 
     if (loaded.length > 0) {
@@ -88,7 +111,8 @@ export function App() {
       );
       setBatchResults(results);
     } catch (err) {
-      console.error('Batch error:', err);
+      console.debug('Batch error:', err);
+      setUiError({ ...t.errors.batchFailed, type: 'error' });
     } finally {
       setIsBatchProcessing(false);
     }
@@ -139,12 +163,18 @@ export function App() {
           />
         )}
 
+        {/* UI Error Banner — dismissible, replaces native alert() */}
+        {uiError && (
+          <UIErrorBanner error={uiError} onDismiss={() => setUiError(null)} />
+        )}
+
         {/* Dynamic State: Upload Zone if empty, otherwise Studio Workspace */}
         {currentImage ? (
           <Workspace
             key={currentImage.id}
             imageFile={currentImage}
             activeGoal={activeGoal}
+            onSetError={setUiError}
             onUploadNew={() => {
               // Trigger file upload or clear
               const input = document.createElement('input');
@@ -171,7 +201,7 @@ export function App() {
               <h4 className="footer-col-title">🔒 100% Client-Side Privacy</h4>
               <p className="footer-col-text">
                 Your images never leave your computer or phone. Transformations are calculated
-                directly in WebAssembly and Canvas APIs. No accounts, no watermarks, and zero tracking.
+                 directly using the Canvas API in your browser's memory. Nothing is uploaded. No accounts, no watermarks, and zero tracking.
               </p>
             </div>
 

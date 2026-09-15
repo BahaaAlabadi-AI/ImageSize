@@ -24,6 +24,7 @@ import {
   ProcessedResult,
   QuickWizard,
 } from '../types/image';
+import { UIError, UIErrorBanner } from './UIErrorBanner';
 import { useTranslation } from '../i18n/useTranslation';
 import { formatBytes } from '../utils/formatters';
 import { processImage } from '../engine/transform';
@@ -41,12 +42,14 @@ interface WorkspaceProps {
   imageFile: ImageFile;
   activeGoal?: QuickWizard | null;
   onUploadNew: () => void;
+  onSetError?: (err: UIError | null) => void;
 }
 
 export const Workspace: React.FC<WorkspaceProps> = ({
   imageFile,
   activeGoal,
   onUploadNew,
+  onSetError,
 }) => {
   const { t } = useTranslation();
 
@@ -85,6 +88,8 @@ export const Workspace: React.FC<WorkspaceProps> = ({
   // Processing state & latest result
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [result, setResult] = useState<ProcessedResult | null>(null);
+  // Local error for workspace-scoped warnings (e.g. target size not reached)
+  const [localError, setLocalError] = useState<UIError | null>(null);
 
   // Handle quick wizard goal triggers
   useEffect(() => {
@@ -146,6 +151,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
   // Execute image processing
   const handleApplyProcess = async () => {
     setIsProcessing(true);
+    setLocalError(null);
     try {
       const res = await processImage(imageFile, {
         crop: activeCrop,
@@ -154,9 +160,23 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         transform: transformOptions,
       });
       setResult(res);
+      // Surface target size warning if binary search couldn't reach the goal
+      if (res.targetSizeWarning) {
+        const warning: UIError = {
+          ...t.errors.targetSizeNotReached,
+          message: `${t.errors.targetSizeNotReached.message} Actual size: ${res.targetSizeWarning.actualKb} KB (target: ${res.targetSizeWarning.targetKb} KB).`,
+          type: 'warning',
+        };
+        setLocalError(warning);
+        if (onSetError) onSetError(warning);
+      }
     } catch (err) {
-      console.error('Processing error:', err);
-      alert('Could not process image: ' + (err instanceof Error ? err.message : 'Unknown error'));
+      console.debug('Processing error:', err);
+      const errObj: UIError = err instanceof RangeError || err instanceof DOMException
+        ? { ...t.errors.imageTooLarge, type: 'error' }
+        : { ...t.errors.processingFailed, type: 'error' };
+      setLocalError(errObj);
+      if (onSetError) onSetError(errObj);
     } finally {
       setIsProcessing(false);
     }

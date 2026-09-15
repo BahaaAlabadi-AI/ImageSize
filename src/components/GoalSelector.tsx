@@ -80,6 +80,8 @@ export const GoalSelector: React.FC<GoalSelectorProps> = ({ onSelectGoal, active
               onClick={() => onSelectGoal(g.id)}
               className={`goal-card ${isActive ? 'is-active' : ''}`}
               style={{ '--goal-gradient': g.gradient } as React.CSSProperties}
+              aria-label={`${g.title}: ${g.desc}`}
+              aria-pressed={isActive}
             >
               <div className="goal-top">
                 <span className="goal-icon-wrap">{g.icon}</span>

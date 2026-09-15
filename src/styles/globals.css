@@ -275,3 +275,85 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-border-hover);
 }
+
+/* ============================================================
+   Accessibility: Reduced Motion
+   Disables / shortens all non-essential animations and
+   transitions for users who prefer reduced motion.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  /* Aurora ambient orbs */
+  .aurora-orb-1,
+  .aurora-orb-2 {
+    display: none;
+  }
+
+  /* Primary glow button */
+  .btn-primary-glow,
+  .btn-primary-glow:hover,
+  .btn-primary-glow:active {
+    transition: none;
+    transform: none;
+  }
+
+  /* Upload drop zone */
+  .upload-dropzone,
+  .upload-dropzone:hover,
+  .upload-dropzone.is-dragover {
+    transition: none;
+    transform: none;
+  }
+
+  /* Goal cards */
+  .goal-card,
+  .goal-card:hover {
+    transition: none;
+    transform: none;
+  }
+
+  /* Pill chips */
+  .pill-chip {
+    transition: none;
+  }
+
+  /* Custom slider thumb */
+  .custom-slider::-webkit-slider-thumb,
+  .custom-slider::-webkit-slider-thumb:hover {
+    transition: none;
+    transform: none;
+  }
+
+  /* Glass panel hover */
+  .glass-panel {
+    transition: none;
+  }
+
+  /* Switch toggle track */
+  .switch-track,
+  .switch-track::before {
+    transition: none;
+  }
+
+  /* Glowing box border */
+  .glowing-box::before {
+    transition: none;
+  }
+
+  /* Transform buttons */
+  .transform-btn,
+  .transform-btn:hover {
+    transition: none;
+    transform: none;
+  }
+
+  /* Spinner in batch processing */
+  .spin-icon {
+    animation: none;
+  }
+
+  /* UIErrorBanner slide-in */
+  .ui-error-banner {
+    animation: none;
+  }
+}
+
