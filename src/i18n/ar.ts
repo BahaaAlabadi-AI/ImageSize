@@ -11,6 +11,7 @@ export const ar = {
   pasteHint: 'يدعم اللصق المباشر من الحافظة (Ctrl+V أو ⌘V)',
   supportedFormats: 'يدعم صيغ JPG و PNG و WebP و AVIF و GIF و SVG',
   dropActive: 'أفلت الصورة الآن لبدء المعالجة الفورية',
+  uploadAriaLabel: 'ارفع صورة — اضغط أو استخدم زر Enter لاختيار ملف، أو اسحب وأفلت صورة هنا',
   chooseImage: 'اختيار صورة',
   batchUpload: 'المعالجة المجمعة: أسقط صوراً متعددة أو',
   addMoreImages: 'إضافة صور أخرى',
@@ -21,6 +22,7 @@ export const ar = {
   downloadAllZip: 'تحميل الكل في ملف مضغوط (.ZIP)',
   cancel: 'إلغاء',
   close: 'إغلاق',
+  dismissNotification: 'إغلاق التنبيه',
   save: 'حفظ',
   remove: 'حذف',
   preview: 'معاينة',
@@ -83,6 +85,7 @@ export const ar = {
     modeFill: 'تعبئة (Fill)',
     modeCrop: 'قص للملاءمة (Crop to Fit)',
     modeExact: 'أبعاد دقيقة (تمدد)',
+    exactModeWarning: 'وضع Exact يمدّد الصورة — سيتم تشويه نسبة الأبعاد.',
     applyResize: 'تطبيق تغيير الحجم',
   },
 
@@ -158,6 +161,7 @@ export const ar = {
     dateTaken: 'تاريخ ووقت الالتقاط',
     dimensions: 'أبعاد البكسل الأصلية',
     location: 'إحداثيات GPS',
+    noGpsData: 'لا توجد بيانات GPS محفوظة',
     software: 'التطبيق أو البرنامج',
   },
 

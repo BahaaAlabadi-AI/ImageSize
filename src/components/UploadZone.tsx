@@ -80,7 +80,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
     <div
       role="button"
       tabIndex={0}
-      aria-label="Upload image — click or press Enter to browse, or drag and drop a file"
+      aria-label={t.uploadAriaLabel}
       className={`upload-dropzone ${isDragOver ? 'is-dragover' : ''} ${isProcessing ? 'is-processing' : ''}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}

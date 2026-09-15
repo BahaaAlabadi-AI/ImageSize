@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertTriangle, X, Info } from 'lucide-react';
+import { useTranslation } from '../i18n/useTranslation';
 
 export interface UIError {
   title: string;
@@ -14,6 +15,7 @@ interface UIErrorBannerProps {
 }
 
 export const UIErrorBanner: React.FC<UIErrorBannerProps> = ({ error, onDismiss }) => {
+  const { t } = useTranslation();
   if (!error) return null;
 
   const isWarning = error.type === 'warning';
@@ -42,7 +44,7 @@ export const UIErrorBanner: React.FC<UIErrorBannerProps> = ({ error, onDismiss }
         type="button"
         className="error-dismiss-btn"
         onClick={onDismiss}
-        aria-label="Dismiss notification"
+        aria-label={t.dismissNotification}
       >
         <X size={16} />
       </button>

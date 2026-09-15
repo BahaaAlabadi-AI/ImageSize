@@ -75,8 +75,17 @@ export const PresetPicker: React.FC<PresetPickerProps> = ({
           return (
             <div
               key={item.id}
+              role="button"
+              tabIndex={0}
               className={`preset-card ${isCurrent ? 'is-active' : ''}`}
               onClick={() => onSelectPreset(item.width, item.height, item.name)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectPreset(item.width, item.height, item.name);
+                }
+              }}
+              aria-label={`${item.name} (${item.width} × ${item.height} px)`}
             >
               <div className="preset-top">
                 <div className="preset-title-wrap">

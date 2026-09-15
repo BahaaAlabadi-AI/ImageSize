@@ -82,8 +82,18 @@ export const BatchQueue: React.FC<BatchQueueProps> = ({
           return (
             <div
               key={file.id}
+              role="button"
+              tabIndex={0}
               className={`batch-thumb-item ${isActive ? 'is-active' : ''}`}
               onClick={() => onSelectFile(idx)}
+              onKeyDown={(e) => {
+                if (e.target !== e.currentTarget) return;
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectFile(idx);
+                }
+              }}
+              aria-label={`${file.name} (${formatBytes(file.size)})`}
             >
               <img src={file.dataUrl} alt={file.name} className="thumb-img" />
               <div className="thumb-info">

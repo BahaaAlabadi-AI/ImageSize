@@ -71,7 +71,7 @@ export const MetadataModal: React.FC<MetadataModalProps> = ({
                   <span className="entry-label">{t.metadata.location}</span>
                 </div>
                 <span className="entry-val font-mono">
-                  {exif.latitude ? `${exif.latitude}, ${exif.longitude}` : 'No GPS coordinate stored'}
+                  {exif.latitude ? `${exif.latitude}, ${exif.longitude}` : t.metadata.noGpsData}
                 </span>
               </div>
             </div>

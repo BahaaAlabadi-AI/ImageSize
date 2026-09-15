@@ -184,7 +184,7 @@ export const ResizePanel: React.FC<ResizePanelProps> = ({
         {resizeOptions.mode === 'exact' && (
           <div className="exact-mode-warning" role="alert">
             <ShieldAlert size={14} />
-            <span>Exact mode stretches the image — aspect ratio will be distorted.</span>
+            <span>{t.resize.exactModeWarning}</span>
           </div>
         )}
       </div>

@@ -11,6 +11,7 @@ export const en = {
   pasteHint: 'Supports pasting from clipboard (Ctrl+V or ⌘V)',
   supportedFormats: 'Supports JPG, PNG, WebP, AVIF, GIF, SVG',
   dropActive: 'Drop your image now to prepare it',
+  uploadAriaLabel: 'Upload image — click or press Enter to browse, or drag and drop a file',
   chooseImage: 'Choose Image',
   batchUpload: 'Batch Mode: Drop multiple files or',
   addMoreImages: 'Add More Images',
@@ -21,6 +22,7 @@ export const en = {
   downloadAllZip: 'Download All (.ZIP)',
   cancel: 'Cancel',
   close: 'Close',
+  dismissNotification: 'Dismiss notification',
   save: 'Save',
   remove: 'Remove',
   preview: 'Preview',
@@ -83,6 +85,7 @@ export const en = {
     modeFill: 'Fill (Cover)',
     modeCrop: 'Crop to Fit',
     modeExact: 'Exact (Stretch)',
+    exactModeWarning: 'Exact mode stretches the image — aspect ratio will be distorted.',
     applyResize: 'Apply Resize',
   },
 
@@ -158,6 +161,7 @@ export const en = {
     dateTaken: 'Date / Time',
     dimensions: 'Original Pixels',
     location: 'GPS Coordinates',
+    noGpsData: 'No GPS coordinate stored',
     software: 'Software / App',
   },
 
