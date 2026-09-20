@@ -286,7 +286,7 @@ export const CompressPanel: React.FC<CompressPanelProps> = ({
           gap: var(--space-1-5);
           font-size: var(--text-xs);
           font-weight: 700;
-          color: var(--color-accent-purple);
+          color: var(--color-primary);
           margin-bottom: var(--space-0-5);
         }
 
@@ -362,10 +362,10 @@ export const CompressPanel: React.FC<CompressPanelProps> = ({
         }
 
         .target-pill.is-active {
-          background: var(--color-accent-purple);
+          background: var(--color-primary);
           color: #ffffff;
           border-color: transparent;
-          box-shadow: var(--shadow-glow-purple);
+          box-shadow: var(--shadow-glow);
         }
 
         .custom-target-row {

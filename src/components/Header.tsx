@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Moon, Sun, Globe, Sparkles, SlidersHorizontal } from 'lucide-react';
+import { ShieldCheck, Moon, Sun, Globe } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 
 interface HeaderProps {
@@ -16,26 +16,29 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
       <div className="header-container">
         {/* Brand Logo & Name */}
         <div className="brand-group">
-          <div className="logo-emblem">
-            <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
-              <rect x="4" y="4" width="40" height="40" rx="10" fill="url(#logoGrad)" stroke="rgba(255,255,255,0.2)" stroke-width="2" />
-              <path d="M12 18V14C14 14 16 14 18 14" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
-              <path d="M36 18V14C34 14 32 14 30 14" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
-              <path d="M12 30V34C14 34 16 34 18 34" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
-              <path d="M36 30V34C34 34 32 34 30 34" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="24" cy="24" r="3" fill="#ffffff" />
+          <div className="logo-emblem" aria-hidden="true">
+            {/* Precision Optical Aperture & Crop Reticle SVG */}
+            <svg width="30" height="30" viewBox="0 0 48 48" fill="none">
+              <rect x="3" y="3" width="42" height="42" rx="8" fill="url(#studioGrad)" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" />
+              {/* Corner Crop Marks */}
+              <path d="M12 18V13H17" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M36 18V13H31" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M12 30V35H17" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M36 30V35H31" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              {/* Center Optical Sensor & Amber Focus Pip */}
+              <circle cx="24" cy="24" r="5" stroke="#ffffff" strokeWidth="1.75" strokeDasharray="3 2" />
+              <circle cx="24" cy="24" r="2" fill="#f59e0b" />
               <defs>
-                <linearGradient id="logoGrad" x1="0" y1="0" x2="48" y2="48">
-                  <stop offset="0%" stopColor="#3b82f6" />
-                  <stop offset="50%" stopColor="#8b5cf6" />
-                  <stop offset="100%" stopColor="#ec4899" />
+                <linearGradient id="studioGrad" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#1e40af" />
+                  <stop offset="100%" stopColor="#0369a1" />
                 </linearGradient>
               </defs>
             </svg>
           </div>
-          <div>
-            <h1 className="brand-title">{t.appName}</h1>
-            <p className="brand-subtitle">{t.noAccount}</p>
+          <div className="brand-text-col">
+            <span className="brand-title">{t.appName}</span>
+            <span className="brand-subtitle">{t.noAccount}</span>
           </div>
         </div>
 
@@ -43,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
         <div className="header-actions">
           {/* Privacy Badge */}
           <div className="privacy-badge" title={t.privacyNotice}>
-            <ShieldCheck size={16} className="badge-icon" />
+            <ShieldCheck size={14} className="badge-icon" />
             <span className="badge-text">{t.privacyBadge}</span>
           </div>
 
@@ -54,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
             title={t.themeToggle}
             aria-label={t.themeToggle}
           >
-            {theme === 'dark' ? <Sun size={19} /> : <Moon size={19} />}
+            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
           </button>
 
           {/* Language Switcher */}
@@ -64,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
             title={t.langToggle}
             aria-label={t.langToggle}
           >
-            <Globe size={16} />
+            <Globe size={15} />
             <span className="lang-label">{lang === 'en' ? 'العربية' : 'English'}</span>
           </button>
         </div>
@@ -78,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
           background: var(--glass-bg);
           backdrop-filter: var(--glass-backdrop);
           -webkit-backdrop-filter: var(--glass-backdrop);
-          border-bottom: var(--glass-border);
+          border-bottom: 1px solid var(--color-border-subtle);
           transition: background-color var(--duration-normal);
         }
 
@@ -96,84 +99,93 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
           display: flex;
           align-items: center;
           gap: var(--space-3);
+          cursor: default;
         }
 
         .logo-emblem {
           display: flex;
           align-items: center;
           justify-content: center;
-          filter: drop-shadow(0 2px 8px rgba(139, 92, 246, 0.4));
+          filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.35));
           transition: transform var(--duration-fast) var(--ease-spring);
         }
 
         .brand-group:hover .logo-emblem {
-          transform: rotate(5deg) scale(1.05);
+          transform: scale(1.04);
+        }
+
+        .brand-text-col {
+          display: flex;
+          flex-direction: column;
         }
 
         .brand-title {
-          font-size: var(--text-base);
+          font-family: var(--font-display);
+          font-size: var(--text-sm);
           font-weight: 700;
-          letter-spacing: -0.02em;
+          letter-spacing: -0.01em;
           color: var(--color-text-primary);
-          line-height: 1.2;
+          line-height: 1.25;
         }
 
         .brand-subtitle {
           font-size: var(--text-2xs);
           color: var(--color-text-muted);
           font-weight: 500;
+          font-family: var(--font-sans);
         }
 
         .header-actions {
           display: flex;
           align-items: center;
-          gap: var(--space-3);
+          gap: var(--space-2-5);
         }
 
         .privacy-badge {
           display: inline-flex;
           align-items: center;
-          gap: var(--space-2);
-          padding: var(--space-1-5) var(--space-3);
-          border-radius: var(--radius-full);
-          background: rgba(16, 185, 129, 0.12);
+          gap: var(--space-1-5);
+          padding: 4px 10px;
+          border-radius: var(--radius-xs);
+          background: rgba(16, 185, 129, 0.1);
           border: 1px solid rgba(16, 185, 129, 0.25);
           color: var(--color-accent-emerald);
           font-size: var(--text-xs);
           font-weight: 600;
+          font-family: var(--font-mono);
           user-select: none;
         }
 
         .badge-icon {
           color: var(--color-accent-emerald);
+          flex-shrink: 0;
         }
 
         .icon-btn, .lang-btn {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: var(--space-2);
-          min-height: 38px;
-          min-width: 38px;
-          padding: 0 var(--space-3);
-          border-radius: var(--radius-md);
+          gap: var(--space-1-5);
+          min-height: 34px;
+          min-width: 34px;
+          padding: 0 var(--space-2-5);
+          border-radius: var(--radius-sm);
           background: var(--color-bg-surface);
           border: 1px solid var(--color-border-default);
           color: var(--color-text-primary);
           transition: background-color var(--duration-fast) var(--ease-smooth),
-                      border-color var(--duration-fast) var(--ease-smooth),
-                      transform var(--duration-fast) var(--ease-smooth);
+                      border-color var(--duration-fast) var(--ease-smooth);
         }
 
         .icon-btn:hover, .lang-btn:hover {
           background: var(--color-bg-surface-hover);
           border-color: var(--color-border-hover);
-          transform: translateY(-1px);
         }
 
         .lang-label {
           font-size: var(--text-xs);
           font-weight: 600;
+          font-family: var(--font-sans);
         }
 
         @media (max-width: 768px) {
@@ -181,10 +193,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
             display: none;
           }
           .header-container {
-            padding: var(--space-2-5) var(--space-4);
-          }
-          .brand-title {
-            font-size: var(--text-sm);
+            padding: var(--space-2) var(--space-4);
           }
         }
       `}</style>

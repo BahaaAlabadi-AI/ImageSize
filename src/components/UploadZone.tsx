@@ -176,8 +176,8 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
           background: var(--glass-bg);
           backdrop-filter: var(--glass-backdrop);
           -webkit-backdrop-filter: var(--glass-backdrop);
-          border: 2px dashed var(--color-border-default);
-          border-radius: var(--radius-2xl);
+          border: 1px dashed var(--color-border-default);
+          border-radius: var(--radius-xl);
           box-shadow: var(--shadow-sm);
           cursor: pointer;
           transition: border-color var(--duration-normal) var(--ease-smooth),
@@ -192,9 +192,9 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
           content: '';
           position: absolute;
           inset: 0;
-          background: radial-gradient(circle at center, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+          background: radial-gradient(circle at center, rgba(37, 99, 235, 0.05) 0%, transparent 65%);
           pointer-events: none;
-          opacity: 0.5;
+          opacity: 0.6;
           transition: opacity var(--duration-fast);
         }
 
@@ -209,9 +209,9 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
         }
 
         .upload-dropzone.is-dragover {
-          border-color: var(--color-accent-purple);
-          background: rgba(139, 92, 246, 0.08);
-          box-shadow: 0 0 32px rgba(139, 92, 246, 0.35);
+          border-color: var(--color-primary);
+          background: rgba(37, 99, 235, 0.08);
+          box-shadow: 0 0 28px rgba(37, 99, 235, 0.35);
           transform: scale(1.01);
         }
 
@@ -224,9 +224,9 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 72px;
-          height: 72px;
-          border-radius: var(--radius-xl);
+          width: 64px;
+          height: 64px;
+          border-radius: var(--radius-lg);
           background: var(--color-bg-elevated);
           border: 1px solid var(--color-border-default);
           box-shadow: var(--shadow-md);
@@ -238,10 +238,10 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
         }
 
         .upload-dropzone:hover .upload-emblem {
-          transform: scale(1.1);
-          color: var(--color-accent-purple);
-          border-color: var(--color-accent-purple);
-          box-shadow: var(--shadow-glow-purple);
+          transform: scale(1.06);
+          color: var(--color-primary-hover);
+          border-color: var(--color-primary);
+          box-shadow: var(--shadow-glow);
         }
 
         .upload-copy {
@@ -250,8 +250,10 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
         }
 
         .upload-main-title {
+          font-family: var(--font-display);
           font-size: var(--text-xl);
           font-weight: 700;
+          letter-spacing: -0.01em;
           color: var(--color-text-primary);
           margin-bottom: var(--space-1);
         }
@@ -275,30 +277,32 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
           display: inline-flex;
           align-items: center;
           gap: var(--space-2);
-          padding: var(--space-3) var(--space-8);
-          min-height: 48px;
-          border-radius: var(--radius-full);
-          font-size: var(--text-base);
+          padding: var(--space-2-5) var(--space-6);
+          min-height: 44px;
+          border-radius: var(--radius-sm);
+          font-family: var(--font-display);
+          font-size: var(--text-sm);
           font-weight: 600;
           color: #ffffff;
           background: var(--gradient-primary);
-          box-shadow: var(--shadow-glow);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          box-shadow: var(--shadow-sm), 0 2px 8px -2px rgba(37, 99, 235, 0.4);
           transition: transform var(--duration-fast) var(--ease-spring),
-                      box-shadow var(--duration-fast) var(--ease-spring);
+                      box-shadow var(--duration-fast) var(--ease-smooth);
         }
 
         .choose-btn:hover {
-          transform: translateY(-1px) scale(1.03);
-          box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-glow), 0 4px 14px -1px rgba(37, 99, 235, 0.5);
         }
 
         .demo-sample-btn {
           display: inline-flex;
           align-items: center;
           gap: var(--space-2);
-          padding: var(--space-3) var(--space-5);
-          min-height: 48px;
-          border-radius: var(--radius-full);
+          padding: var(--space-2-5) var(--space-4);
+          min-height: 44px;
+          border-radius: var(--radius-sm);
           font-size: var(--text-sm);
           font-weight: 600;
           color: var(--color-text-primary);
@@ -312,8 +316,8 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
 
         .demo-sample-btn:hover {
           background: var(--color-bg-surface-hover);
-          border-color: var(--color-accent-purple);
-          color: var(--color-accent-purple);
+          border-color: var(--color-border-hover);
+          color: var(--color-primary);
           transform: translateY(-1px);
         }
 
@@ -350,6 +354,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, isProce
           font-size: var(--text-xs);
           color: var(--color-text-muted);
           margin-top: var(--space-1);
+          font-family: var(--font-mono);
         }
 
         @media (max-width: 640px) {

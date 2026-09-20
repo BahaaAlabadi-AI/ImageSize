@@ -298,10 +298,12 @@ export const PresetPicker: React.FC<PresetPickerProps> = ({
         .preset-badge {
           font-size: var(--text-2xs);
           font-weight: 700;
-          color: var(--color-accent-purple);
-          background: rgba(139, 92, 246, 0.12);
-          padding: 2px 8px;
-          border-radius: var(--radius-full);
+          font-family: var(--font-mono);
+          color: var(--color-primary);
+          background: var(--color-primary-subtle);
+          border: 1px solid rgba(37, 99, 235, 0.25);
+          padding: 2px 7px;
+          border-radius: var(--radius-xs);
         }
 
         .preset-desc {
@@ -348,7 +350,7 @@ export const PresetPicker: React.FC<PresetPickerProps> = ({
         }
 
         .calc-icon {
-          color: var(--color-accent-purple);
+          color: var(--color-accent-amber);
         }
 
         .dpi-inputs-grid {

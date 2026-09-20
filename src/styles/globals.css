@@ -1,48 +1,48 @@
 @import './tokens.css';
 @import './reset.css';
 
-/* Ambient Aurora Glow Background */
+/* ==========================================================================
+   Precision Photographic Darkroom Backdrop (Replaces generic AI Aurora Slop)
+   ========================================================================== */
 .app-backdrop {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
+  background-image: 
+    radial-gradient(ellipse 80% 45% at 50% -5%, rgba(37, 99, 235, 0.12), transparent 70%),
+    linear-gradient(var(--grid-pattern-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-pattern-color) 1px, transparent 1px);
+  background-size: 100% 100%, 36px 36px, 36px 36px;
+  background-position: center top, center center, center center;
 }
 
-.aurora-orb-1 {
-  position: absolute;
-  top: -10%;
-  left: 20%;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.08) 50%, transparent 70%);
-  filter: blur(80px);
-  transform: translateZ(0);
+[data-theme='light'] .app-backdrop {
+  background-image: 
+    radial-gradient(ellipse 80% 45% at 50% -5%, rgba(29, 78, 216, 0.06), transparent 70%),
+    linear-gradient(var(--grid-pattern-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-pattern-color) 1px, transparent 1px);
 }
 
-.aurora-orb-2 {
-  position: absolute;
-  top: 40%;
-  right: -5%;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, rgba(16, 185, 129, 0.06) 50%, transparent 70%);
-  filter: blur(90px);
-  transform: translateZ(0);
+/* Typography Hierarchy Defaults */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
-[data-theme='light'] .aurora-orb-1 {
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.04) 50%, transparent 70%);
+[dir='rtl'] h1, [dir='rtl'] h2, [dir='rtl'] h3, [dir='rtl'] h4, [dir='rtl'] h5, [dir='rtl'] h6 {
+  font-family: var(--font-arabic);
+  letter-spacing: normal;
 }
 
-[data-theme='light'] .aurora-orb-2 {
-  background: radial-gradient(circle, rgba(236, 72, 153, 0.06) 0%, rgba(16, 185, 129, 0.03) 50%, transparent 70%);
+code, kbd, samp, pre, .font-mono {
+  font-family: var(--font-mono);
+  letter-spacing: -0.01em;
 }
 
-/* Glassmorphism Containers */
+/* Structured Studio Glass Surface */
 .glass-panel {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-backdrop);
@@ -58,7 +58,7 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Glowing Gradient Border Box (Active / Focus Highlight as in Reference Image 2) */
+/* Optical Precision Border Box */
 .glowing-box {
   position: relative;
   background: var(--color-bg-input);
@@ -69,29 +69,27 @@
 .glowing-box::before {
   content: '';
   position: absolute;
-  inset: -1.5px;
-  border-radius: calc(var(--radius-lg) + 1.5px);
+  inset: -1px;
+  border-radius: calc(var(--radius-lg) + 1px);
   background: var(--gradient-glow-border);
-  opacity: 0.6;
+  opacity: 0.4;
   z-index: -1;
-  transition: opacity var(--duration-fast) var(--ease-smooth), filter var(--duration-fast) var(--ease-smooth);
-  filter: blur(4px);
+  transition: opacity var(--duration-fast) var(--ease-smooth);
 }
 
 .glowing-box:focus-within::before,
 .glowing-box.is-active::before {
   opacity: 1;
-  filter: blur(8px);
 }
 
-/* Modern Pill Button / Chip */
+/* Precision Chip / Filter Button */
 .pill-chip {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3-5, 0.875rem);
-  min-height: 40px;
-  border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-3);
+  min-height: 38px;
+  border-radius: var(--radius-sm);
   font-size: var(--text-sm);
   font-weight: 500;
   background: var(--color-bg-surface);
@@ -110,10 +108,10 @@
 }
 
 .pill-chip.is-active {
-  background: var(--color-accent-purple);
+  background: var(--color-primary);
   color: #ffffff;
   border-color: transparent;
-  box-shadow: var(--shadow-glow-purple);
+  box-shadow: var(--shadow-glow);
 }
 
 .pill-chip.is-active-primary {
@@ -123,7 +121,7 @@
   box-shadow: var(--shadow-glow);
 }
 
-/* Primary Glow Button */
+/* Primary Action Button (Calibrated Cobalt Precision) */
 .btn-primary-glow {
   display: inline-flex;
   align-items: center;
@@ -131,23 +129,24 @@
   gap: var(--space-2);
   padding: var(--space-3) var(--space-6);
   min-height: 44px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
   font-size: var(--text-sm);
   font-weight: 600;
   color: #ffffff;
-  background: var(--gradient-explore);
-  border: none;
-  box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.4);
+  background: var(--gradient-primary);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: var(--shadow-sm), 0 2px 8px -2px rgba(37, 99, 235, 0.4);
   transition: transform var(--duration-fast) var(--ease-spring), box-shadow var(--duration-fast) var(--ease-smooth), opacity var(--duration-fast);
 }
 
 .btn-primary-glow:hover {
-  transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 6px 20px 0 rgba(139, 92, 246, 0.6);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow), 0 4px 14px -1px rgba(37, 99, 235, 0.5);
 }
 
 .btn-primary-glow:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(0);
 }
 
 /* Secondary Button */
@@ -158,7 +157,7 @@
   gap: var(--space-2);
   padding: var(--space-3) var(--space-5);
   min-height: 44px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
   font-size: var(--text-sm);
   font-weight: 500;
   color: var(--color-text-primary);
@@ -173,12 +172,12 @@
   border-color: var(--color-border-hover);
 }
 
-/* Custom Range Slider (Mood / Quality Slider from Reference Image 2) */
+/* Custom Range Slider */
 .custom-slider {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 8px;
+  height: 6px;
   border-radius: var(--radius-full);
   background: var(--color-bg-subtle);
   outline: none;
@@ -188,8 +187,8 @@
 .custom-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   border-radius: var(--radius-full);
   background: #ffffff;
   border: 2px solid var(--color-primary);
@@ -200,12 +199,12 @@
 
 .custom-slider::-webkit-slider-thumb:hover {
   transform: scale(1.15);
-  box-shadow: 0 0 12px var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
 }
 
 .custom-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   border-radius: var(--radius-full);
   background: #ffffff;
   border: 2px solid var(--color-primary);
@@ -213,12 +212,12 @@
   cursor: pointer;
 }
 
-/* Switch Toggle (Watermark toggle from Reference Image 2) */
+/* Switch Toggle */
 .switch-toggle {
   position: relative;
   display: inline-block;
-  width: 46px;
-  height: 26px;
+  width: 44px;
+  height: 24px;
 }
 
 .switch-toggle input {
@@ -240,8 +239,8 @@
 .switch-track::before {
   position: absolute;
   content: "";
-  height: 20px;
-  width: 20px;
+  height: 18px;
+  width: 18px;
   inset-inline-start: 2px;
   bottom: 2px;
   background-color: #ffffff;
@@ -251,7 +250,7 @@
 }
 
 .switch-toggle input:checked + .switch-track {
-  background: var(--gradient-primary);
+  background: var(--color-primary);
   border-color: transparent;
 }
 
@@ -263,9 +262,7 @@
   transform: translateX(-20px);
 }
 
-/* ============================================================
-   Shared Spinner (used by BatchQueue & Workspace Apply button)
-   ============================================================ */
+/* Spin animation */
 @keyframes spin {
   100% { transform: rotate(360deg); }
 }
@@ -274,15 +271,11 @@
   animation: spin 1s linear infinite;
 }
 
-/* ============================================================
-   Fade-in-up: subtle enter animation for major state changes
-   (workspace appear, tool panel switch, result reveal, batch queue)
-   Max 200ms, 10px translate — calm, not showy.
-   ============================================================ */
-@keyframes fade-in-up {
+/* Deliberate Micro-Interaction */
+@keyframes studio-reveal {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -291,13 +284,13 @@
 }
 
 .fade-in-up {
-  animation: fade-in-up var(--duration-normal) var(--ease-smooth) both;
+  animation: studio-reveal var(--duration-normal) var(--ease-smooth) both;
 }
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -310,3 +303,12 @@
   background: var(--color-border-hover);
 }
 
+/* Accessible Reduced Motion Compliance */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

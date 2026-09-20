@@ -369,10 +369,10 @@ export const ResizePanel: React.FC<ResizePanelProps> = ({
         }
 
         .fit-pill.is-active {
-          background: var(--color-accent-purple);
+          background: var(--color-primary);
           border-color: transparent;
           color: #ffffff;
-          box-shadow: var(--shadow-glow-purple);
+          box-shadow: var(--shadow-glow);
         }
 
         .exact-mode-warning {

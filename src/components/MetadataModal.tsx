@@ -141,7 +141,7 @@ export const MetadataModal: React.FC<MetadataModalProps> = ({
         }
 
         .shield-icon {
-          color: var(--color-accent-purple);
+          color: var(--color-accent-emerald);
         }
 
         .meta-title {

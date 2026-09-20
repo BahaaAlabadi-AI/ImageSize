@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Camera, FileText, Globe, Shield, ArrowRight } from 'lucide-react';
+import { SlidersHorizontal, Camera, FileCheck2, Globe2, ShieldCheck, Zap } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { QuickWizard } from '../types/image';
 
@@ -16,58 +16,57 @@ export const GoalSelector: React.FC<GoalSelectorProps> = ({ onSelectGoal, active
     title: string;
     desc: string;
     icon: React.ReactNode;
-    badge?: string;
-    gradient: string;
+    tag: string;
+    featured?: boolean;
   }> = [
     {
       id: 'make-under-200kb',
       title: t.goals.under200kb.title,
       desc: t.goals.under200kb.desc,
-      icon: <FileText size={20} />,
-      badge: '< 200 KB',
-      gradient: 'linear-gradient(135deg, rgba(236,72,153,0.15), rgba(139,92,246,0.15))',
-    },
-    {
-      id: 'instagram-1080',
-      title: t.goals.instagram1080.title,
-      desc: t.goals.instagram1080.desc,
-      icon: <Camera size={20} />,
-      badge: '1080×1080',
-      gradient: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.15))',
+      icon: <FileCheck2 size={18} />,
+      tag: '< 200 KB',
+      featured: true, // Prominent technical workflow
     },
     {
       id: 'passport-35x45',
       title: t.goals.passport.title,
       desc: t.goals.passport.desc,
-      icon: <Shield size={20} />,
-      badge: '300 DPI',
-      gradient: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(59,130,246,0.15))',
+      icon: <Camera size={18} />,
+      tag: '300 DPI',
+      featured: true,
+    },
+    {
+      id: 'instagram-1080',
+      title: t.goals.instagram1080.title,
+      desc: t.goals.instagram1080.desc,
+      icon: <Zap size={18} />,
+      tag: '1080×1080',
     },
     {
       id: 'website-ready',
       title: t.goals.website.title,
       desc: t.goals.website.desc,
-      icon: <Globe size={20} />,
-      badge: 'WebP',
-      gradient: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(245,158,11,0.15))',
+      icon: <Globe2 size={18} />,
+      tag: 'WebP',
     },
     {
       id: 'remove-exif',
       title: t.goals.removeExif.title,
       desc: t.goals.removeExif.desc,
-      icon: <Sparkles size={20} />,
-      badge: 'Privacy',
-      gradient: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(239,68,68,0.15))',
+      icon: <ShieldCheck size={18} />,
+      tag: 'Metadata',
     },
   ];
 
   return (
-    <section className="goal-selector-section">
+    <section className="goal-selector-section" aria-label="Preset Workflows">
       <div className="goal-header">
-        <h2 className="goal-title">
-          <Sparkles size={18} className="sparkle-icon" />
-          {t.whatDoYouNeed}
-        </h2>
+        <div className="goal-title-group">
+          <div className="reticle-icon-wrap" aria-hidden="true">
+            <SlidersHorizontal size={15} />
+          </div>
+          <h2 className="goal-title">{t.whatDoYouNeed}</h2>
+        </div>
         <span className="goal-hint">{t.appTagline}</span>
       </div>
 
@@ -78,17 +77,19 @@ export const GoalSelector: React.FC<GoalSelectorProps> = ({ onSelectGoal, active
             <button
               key={g.id}
               onClick={() => onSelectGoal(g.id)}
-              className={`goal-card ${isActive ? 'is-active' : ''}`}
-              style={{ '--goal-gradient': g.gradient } as React.CSSProperties}
+              className={`goal-card ${g.featured ? 'is-featured' : ''} ${isActive ? 'is-active' : ''}`}
               aria-label={`${g.title}: ${g.desc}`}
               aria-pressed={isActive}
             >
               <div className="goal-top">
-                <span className="goal-icon-wrap">{g.icon}</span>
-                {g.badge && <span className="goal-badge">{g.badge}</span>}
+                <div className="goal-icon-wrap">{g.icon}</div>
+                <span className="goal-tag">{g.tag}</span>
               </div>
-              <h3 className="goal-card-title">{g.title}</h3>
-              <p className="goal-card-desc">{g.desc}</p>
+              <div className="goal-text">
+                <h3 className="goal-card-title">{g.title}</h3>
+                <p className="goal-card-desc">{g.desc}</p>
+              </div>
+              {isActive && <div className="active-dot" aria-hidden="true" />}
             </button>
           );
         })}
@@ -101,82 +102,88 @@ export const GoalSelector: React.FC<GoalSelectorProps> = ({ onSelectGoal, active
 
         .goal-header {
           display: flex;
-          align-items: baseline;
+          align-items: center;
           justify-content: space-between;
           margin-bottom: var(--space-3);
           flex-wrap: wrap;
           gap: var(--space-2);
         }
 
-        .goal-title {
+        .goal-title-group {
           display: flex;
           align-items: center;
           gap: var(--space-2);
-          font-size: var(--text-base);
-          font-weight: 700;
-          color: var(--color-text-primary);
         }
 
-        .sparkle-icon {
-          color: var(--color-accent-purple);
+        .reticle-icon-wrap {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 26px;
+          height: 26px;
+          border-radius: var(--radius-xs);
+          background: var(--color-primary-subtle);
+          color: var(--color-primary);
+        }
+
+        .goal-title {
+          font-family: var(--font-display);
+          font-size: var(--text-sm);
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0;
         }
 
         .goal-hint {
           font-size: var(--text-xs);
           color: var(--color-text-muted);
+          font-family: var(--font-mono);
         }
 
+        /* Asymmetric, tiered action grid (Breaks 5 identical cards slop) */
         .goal-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
           gap: var(--space-3);
         }
 
         .goal-card {
+          position: relative;
           display: flex;
           flex-direction: column;
           align-items: flex-start;
           text-align: start;
-          padding: var(--space-4);
+          padding: var(--space-3-5, 0.875rem) var(--space-4);
           background: var(--color-bg-surface);
-          border: 1px solid var(--color-border-subtle);
-          border-radius: var(--radius-lg);
+          border: 1px solid var(--color-border-default);
+          border-radius: var(--radius-md);
+          box-shadow: var(--shadow-sm);
           transition: transform var(--duration-fast) var(--ease-spring),
-                      border-color var(--duration-fast) var(--ease-spring),
-                      box-shadow var(--duration-fast) var(--ease-spring);
+                      border-color var(--duration-fast) var(--ease-smooth),
+                      background-color var(--duration-fast) var(--ease-smooth),
+                      box-shadow var(--duration-fast) var(--ease-smooth);
           cursor: pointer;
-          position: relative;
-          overflow: hidden;
         }
 
-        .goal-card::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: var(--goal-gradient);
-          opacity: 0;
-          transition: opacity var(--duration-fast);
-          pointer-events: none;
+        .goal-card.is-featured {
+          border-inline-start: 3px solid var(--color-primary);
         }
 
         .goal-card:hover {
           transform: translateY(-2px);
           border-color: var(--color-border-hover);
+          background: var(--color-bg-surface-hover);
           box-shadow: var(--shadow-md);
         }
 
-        .goal-card:hover::before {
-          opacity: 1;
-        }
-
         .goal-card.is-active {
-          border-color: var(--color-accent-purple);
-          background: var(--color-bg-surface-hover);
-          box-shadow: var(--shadow-glow-purple);
+          border-color: var(--color-primary);
+          background: var(--color-bg-elevated);
+          box-shadow: var(--shadow-glow);
         }
 
-        .goal-card.is-active::before {
-          opacity: 1;
+        .goal-card.is-active.is-featured {
+          border-inline-start-color: var(--color-accent-amber);
         }
 
         .goal-top {
@@ -184,46 +191,82 @@ export const GoalSelector: React.FC<GoalSelectorProps> = ({ onSelectGoal, active
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: var(--space-3);
-          z-index: 1;
+          margin-bottom: var(--space-2-5);
         }
 
         .goal-icon-wrap {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 38px;
-          height: 38px;
-          border-radius: var(--radius-md);
-          background: var(--color-bg-elevated);
+          width: 32px;
+          height: 32px;
+          border-radius: var(--radius-xs);
+          background: var(--color-bg-subtle);
           color: var(--color-text-primary);
-          border: 1px solid var(--color-border-default);
+          border: 1px solid var(--color-border-subtle);
+          transition: background-color var(--duration-fast);
         }
 
-        .goal-badge {
+        .goal-card.is-active .goal-icon-wrap {
+          background: var(--color-primary);
+          color: #ffffff;
+          border-color: var(--color-primary);
+        }
+
+        .goal-tag {
           font-size: var(--text-2xs);
-          font-weight: 700;
+          font-weight: 600;
           font-family: var(--font-mono);
-          padding: var(--space-0-5) var(--space-2);
-          border-radius: var(--radius-full);
-          background: rgba(255, 255, 255, 0.08);
+          padding: 2px 7px;
+          border-radius: var(--radius-xs);
+          background: var(--color-bg-subtle);
+          border: 1px solid var(--color-border-subtle);
           color: var(--color-text-secondary);
         }
 
+        .goal-card.is-active .goal-tag {
+          border-color: rgba(37, 99, 235, 0.4);
+          color: var(--color-primary);
+          background: var(--color-primary-subtle);
+        }
+
+        .goal-text {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
         .goal-card-title {
-          font-size: var(--text-sm);
-          font-weight: 600;
+          font-family: var(--font-display);
+          font-size: var(--text-xs);
+          font-weight: 700;
           color: var(--color-text-primary);
           line-height: 1.3;
-          margin-bottom: var(--space-1);
-          z-index: 1;
+          margin: 0;
         }
 
         .goal-card-desc {
           font-size: var(--text-xs);
-          color: var(--color-text-secondary);
-          line-height: 1.4;
-          z-index: 1;
+          color: var(--color-text-muted);
+          line-height: 1.35;
+          margin: 0;
+        }
+
+        .active-dot {
+          position: absolute;
+          top: 8px;
+          inset-inline-end: 8px;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--color-primary);
+          box-shadow: 0 0 6px var(--color-primary);
+        }
+
+        @media (max-width: 640px) {
+          .goal-grid {
+            grid-template-columns: 1fr;
+          }
         }
       `}</style>
     </section>

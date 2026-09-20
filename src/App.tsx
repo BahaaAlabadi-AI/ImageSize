@@ -128,18 +128,15 @@ export function App() {
 
   return (
     <div className="app-root">
-      {/* Aurora Ambient Background */}
-      <div className="app-backdrop">
-        <div className="aurora-orb-1" />
-        <div className="aurora-orb-2" />
-      </div>
+      {/* Precision Darkroom Optical Backdrop */}
+      <div className="app-backdrop" aria-hidden="true" />
 
       {/* Sticky App Header */}
       <Header theme={theme} onToggleTheme={toggleTheme} />
 
       {/* Main App Content */}
       <div className="app-container">
-        {/* Quick Intent Wizards ("What do you want to do?") */}
+        {/* Quick Intent Wizards */}
         <GoalSelector
           onSelectGoal={(goal) => {
             setActiveGoal(goal);
@@ -194,44 +191,42 @@ export function App() {
           </div>
         )}
 
-        {/* Educational FAQ & Technical Specifications Section */}
+        {/* Technical Specifications & Privacy Architecture Section */}
         <footer className="app-seo-footer glass-panel">
-          <div className="footer-grid">
-            <div className="footer-col">
-              <h4 className="footer-col-title">🔒 100% Client-Side Privacy</h4>
-              <p className="footer-col-text">
-                Your images never leave your computer or phone. Transformations are calculated
-                 directly using the Canvas API in your browser's memory. Nothing is uploaded. No accounts, no watermarks, and zero tracking.
+          <div className="footer-layout">
+            <div className="footer-privacy-hero">
+              <div className="privacy-stamp">
+                <span className="stamp-badge">100% IN-BROWSER</span>
+                <h4 className="privacy-title">Zero-Server Image Processing</h4>
+              </div>
+              <p className="privacy-desc">
+                Your images are decoded and transformed entirely in your local device's memory using the HTML5 Canvas & WebAssembly pipeline. No image bytes, file names, or EXIF metadata are ever sent to any remote server or third-party service.
               </p>
             </div>
 
-            <div className="footer-col">
-              <h4 className="footer-col-title">📐 Exact Dimension & Aspect Ratio</h4>
-              <p className="footer-col-text">
-                Lock proportions effortlessly or crop to popular aspect ratios (1:1 Square, 4:5 Portrait,
-                16:9 Landscape, 9:16 Reels/TikTok). Never distorts or stretches your photo unexpectedly.
-              </p>
-            </div>
+            <div className="footer-specs-grid">
+              <div className="spec-card">
+                <span className="spec-label">DIMENSIONS & RATIO</span>
+                <h5 className="spec-title">Lock & Crop Engine</h5>
+                <p className="spec-text">Exact pixel targeting, pixel-density scale factors (1x, 2x, 3x), and standard presets (1:1, 4:5, 16:9, 9:16).</p>
+              </div>
 
-            <div className="footer-col">
-              <h4 className="footer-col-title">⚡ Smart Target Size (KB) Solver</h4>
-              <p className="footer-col-text">
-                Need an image under 200 KB or 500 KB for an official form? Our iterative binary-search
-                engine tests quality values to give you the highest possible clarity under the file size limit.
-              </p>
-            </div>
+              <div className="spec-card">
+                <span className="spec-label">BINARY-SEARCH OPTIMIZER</span>
+                <h5 className="spec-title">Target File Size Solver</h5>
+                <p className="spec-text">Iterative bisect algorithm tests image compression quality to achieve exact file size thresholds (e.g. &lt; 200 KB) with maximum fidelity.</p>
+              </div>
 
-            <div className="footer-col">
-              <h4 className="footer-col-title">🖨️ Print & Passport Presets (300 DPI)</h4>
-              <p className="footer-col-text">
-                Calculate real pixel dimensions from physical millimeters or inches using the formula:
-                Pixels = Inches × DPI. Includes presets for 2×2" visa and 35×45 mm Schengen biometric photos.
-              </p>
+              <div className="spec-card">
+                <span className="spec-label">METRIC & PHYSICAL PRINT</span>
+                <h5 className="spec-title">300 DPI Biometric Accuracy</h5>
+                <p className="spec-text">Physical millimeter calculations (Pixels = Inches × DPI) formatted specifically for Schengen (35×45mm) and US Visa (2×2") standards.</p>
+              </div>
             </div>
           </div>
 
           <div className="footer-bottom-line">
-            <span>© {new Date().getFullYear()} Image Size & Ratio Tool • Built with Web Development Master Suite</span>
+            <span>© {new Date().getFullYear()} Image Size & Ratio Precision Studio • Engineered per Web Development Master Suite (Anti-Slop Standard)</span>
           </div>
         </footer>
       </div>
@@ -262,27 +257,95 @@ export function App() {
         .app-seo-footer {
           margin-top: var(--space-12);
           padding: var(--space-8);
-          border-radius: var(--radius-2xl);
+          border-radius: var(--radius-xl);
+          border: 1px solid var(--color-border-subtle);
         }
 
-        .footer-grid {
+        .footer-layout {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: var(--space-6);
+          grid-template-columns: 1fr 2fr;
+          gap: var(--space-8);
           margin-bottom: var(--space-6);
         }
 
-        .footer-col-title {
-          font-size: var(--text-sm);
-          font-weight: 700;
-          color: var(--color-text-primary);
-          margin-bottom: var(--space-2);
+        .footer-privacy-hero {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-2);
+          padding-inline-end: var(--space-6);
+          border-inline-end: 1px solid var(--color-border-subtle);
         }
 
-        .footer-col-text {
+        .privacy-stamp {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-1);
+        }
+
+        .stamp-badge {
+          align-self: flex-start;
+          font-size: var(--text-2xs);
+          font-weight: 700;
+          font-family: var(--font-mono);
+          color: var(--color-accent-emerald);
+          background: rgba(16, 185, 129, 0.1);
+          border: 1px solid rgba(16, 185, 129, 0.25);
+          padding: 2px 6px;
+          border-radius: var(--radius-xs);
+          letter-spacing: 0.05em;
+        }
+
+        .privacy-title {
+          font-family: var(--font-display);
+          font-size: var(--text-base);
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: var(--space-1) 0 0;
+        }
+
+        .privacy-desc {
           font-size: var(--text-xs);
           color: var(--color-text-secondary);
           line-height: 1.6;
+        }
+
+        .footer-specs-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: var(--space-4);
+        }
+
+        .spec-card {
+          padding: var(--space-3);
+          border-radius: var(--radius-md);
+          background: var(--color-bg-subtle);
+          border: 1px solid var(--color-border-subtle);
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-1);
+        }
+
+        .spec-label {
+          font-size: var(--text-2xs);
+          font-weight: 700;
+          font-family: var(--font-mono);
+          color: var(--color-primary);
+          letter-spacing: 0.03em;
+        }
+
+        .spec-title {
+          font-family: var(--font-display);
+          font-size: var(--text-xs);
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0;
+        }
+
+        .spec-text {
+          font-size: var(--text-2xs);
+          color: var(--color-text-muted);
+          line-height: 1.5;
+          margin: 0;
         }
 
         .footer-bottom-line {
@@ -291,6 +354,20 @@ export function App() {
           border-top: 1px solid var(--color-border-subtle);
           font-size: var(--text-2xs);
           color: var(--color-text-muted);
+          font-family: var(--font-mono);
+        }
+
+        @media (max-width: 900px) {
+          .footer-layout {
+            grid-template-columns: 1fr;
+            gap: var(--space-5);
+          }
+          .footer-privacy-hero {
+            padding-inline-end: 0;
+            border-inline-end: none;
+            border-bottom: 1px solid var(--color-border-subtle);
+            padding-bottom: var(--space-4);
+          }
         }
 
         @media (max-width: 768px) {
@@ -298,7 +375,7 @@ export function App() {
             padding: var(--space-4) var(--space-4) var(--space-8);
           }
           .app-seo-footer {
-            padding: var(--space-6) var(--space-4);
+            padding: var(--space-5) var(--space-4);
           }
         }
       `}</style>

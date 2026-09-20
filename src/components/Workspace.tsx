@@ -553,10 +553,12 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         .transparency-badge {
           font-size: var(--text-2xs);
           font-weight: 600;
-          color: var(--color-accent-purple);
-          background: rgba(139, 92, 246, 0.12);
+          font-family: var(--font-mono);
+          color: var(--color-accent-cyan);
+          background: rgba(6, 182, 212, 0.12);
+          border: 1px solid rgba(6, 182, 212, 0.25);
           padding: 2px 8px;
-          border-radius: var(--radius-sm);
+          border-radius: var(--radius-xs);
         }
 
         .telemetry-right {

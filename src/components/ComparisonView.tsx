@@ -203,7 +203,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
         }
 
         .sparkle-icon {
-          color: var(--color-accent-purple);
+          color: var(--color-primary);
         }
 
         .comp-title {
